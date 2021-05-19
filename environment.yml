@@ -10,7 +10,7 @@ dependencies:
   - earthengine-api=0.1.236
   - gdal=2.3.3
   - pandas
-  - geopandas=0.4.1
+  - geopandas
   - pytz
   - scikit-image
   - scikit-learn
