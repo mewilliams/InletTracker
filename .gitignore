@@ -7,3 +7,5 @@
 *.txt
 *.geojson
 *checkpoint.ipynb
+.DS_Store
+*/.DS_Store
