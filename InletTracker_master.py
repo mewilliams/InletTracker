@@ -26,10 +26,12 @@ site_shapefile_name = 'input_locations.shp' #user input required | change this i
 Analysis_version = 'V1'   #user input required
 
 # date range for analysis
-dates = ['1985-01-01', '2021-12-01']   #user input required
+#dates = ['1985-01-01', '2021-12-01']   #user input required
+dates = ['2021-01-01','2021-12-01']
 
 # satellite missions
-sat_list = ['L5','L7','L8','S2'] #user input required
+#sat_list = ['L5','L7','L8','S2'] #user input required
+sat_list = ['L8']
 
 #load shapefile that contains specific shapes for each ICOLL site as per readme file
 Site_shps, layers, BBX_coords = InletTracker_tools.load_shapes(site_shapefile_name, sitename)
@@ -46,10 +48,10 @@ inputs = {
         }
 
 # retrieve satellite images from GEE (run only once!)
-#metadata = SDS_download.retrieve_images(inputs) #user input required (hash this line only if you have already downloaded the data)
+metadata = SDS_download.retrieve_images(inputs) #user input required (hash this line only if you have already downloaded the data)
 
 # if you have already downloaded the images, just load the metadata file
-metadata = SDS_download.get_metadata(inputs) 
+#metadata = SDS_download.get_metadata(inputs) 
     
 # general settings
 settings = { 
