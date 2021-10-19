@@ -5,7 +5,6 @@
 # Valentin Heimhuber, Water Research Laboratory, University of New South Wales, 2020
 
 #%% Step 1: Initial algorithm settings & imagery download
-
 #load modules
 import os
 from inlettracker import  InletTracker_tools 
@@ -15,23 +14,33 @@ import glob
 import pickle
 
 # filepath where data will be stored
-filepath_data = os.path.join(os.getcwd(), 'data') #user input required | change this path to the location where you want to store the data (can be outside of ../Entrencesat)
+# filepath_data = os.path.join(os.getcwd(), 'data') #user input required | change this path to the location where you want to store the data (can be outside of ../Entrencesat)
+# moved on 26 aug 2021: /Volumes/elplaneta/inlettracker_data/data/
+filepath_data = os.path.join(os.getcwd(), '/Volumes/elplaneta/InletTrackerData/data/') #user input required | change this path to the location where you want to store the data (can be outside of ../Entrencesat)
 
 #sitename as specified in the input input_locations.shp
-sitename = 'DURRAS' #user input required
-site_shapefile_name = 'input_locations.shp' #user input required | change this if a new shapefile was created with the site configurations
+#sitename = 'DURRAS' #user input required
+#site_shapefile_name = 'input_locations.shp' #user input required | change this if a new shapefile was created with the site configurations
+sitename = 'pescadero1' #user input required (if you mess this up, it will hang)
+#site_shapefile_name = 'input_locations.shp' #user input required | change this if a new shapefile was created with the site configurations
+site_shapefile_name = 'input_locations.shp'
 
 #this parameter is used to distinguish progressive 'sets' of analysis that may be based on different seed and receiver point configurations
 #note that within this set of results, a unique directory is created for each path finding index
 Analysis_version = 'V1'   #user input required
 
 # date range for analysis
-#dates = ['1985-01-01', '2021-12-01']   #user input required
-dates = ['2021-01-01','2021-12-01']
+#dates = ['1984-03-01', '2021-12-01']   #user input required
+#dates = ['2021-01-01','2021-12-01']
+dates = ['2021-01-01', '2021-12-01']   #user input required
 
 # satellite missions
 #sat_list = ['L5','L7','L8','S2'] #user input required
-sat_list = ['L8']
+sat_list = ['L8','S2']
+#sat_list = ['L5','L7']
+#sat_list = ['L8']
+#sat_list = ['S2']
+
 
 #load shapefile that contains specific shapes for each ICOLL site as per readme file
 Site_shps, layers, BBX_coords = InletTracker_tools.load_shapes(site_shapefile_name, sitename)
@@ -48,10 +57,10 @@ inputs = {
         }
 
 # retrieve satellite images from GEE (run only once!)
-metadata = SDS_download.retrieve_images(inputs) #user input required (hash this line only if you have already downloaded the data)
+#metadata = SDS_download.retrieve_images(inputs) #user input required (hash this line only if you have already downloaded the data)
 
 # if you have already downloaded the images, just load the metadata file
-#metadata = SDS_download.get_metadata(inputs) 
+metadata = SDS_download.get_metadata(inputs) 
     
 # general settings
 settings = { 
@@ -307,10 +316,10 @@ XS_DTM_classified_df = InletTracker_tools.subset_DTM_df_in_time(XS_DTM_classifie
 #For a first pass assessment or under limited time, skip this step! 
 
 #run the 'check detection' function and create a clean XS_DTM_classified_df
-#XS_DTM_classified_df = InletTracker_tools.check_inlet_state_detection(postprocess_out_path, XS_DTM_classified_df)
+XS_DTM_classified_df = InletTracker_tools.check_inlet_state_detection(postprocess_out_path, XS_DTM_classified_df)
 
 #write out the detection checked DTM classified dataframe to csv
-#XS_DTM_classified_df.to_csv(os.path.join(figure_out_path, settings['inputs']['sitename'] + '_checked_detection_clssfd_df_' + postprocess_params['spectral_index'] + '.csv'))
+XS_DTM_classified_df.to_csv(os.path.join(figure_out_path, settings['inputs']['sitename'] + '_checked_detection_clssfd_df_' + postprocess_params['spectral_index'] + '.csv'))
               
             
        
