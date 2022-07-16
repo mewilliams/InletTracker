@@ -21,4 +21,3 @@ dependencies:
   - notebook
   - seaborn
   - glob2
-  - fes
