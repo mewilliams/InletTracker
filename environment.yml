@@ -7,7 +7,7 @@ dependencies:
   - numpy
   - matplotlib
   - pillow
-  - earthengine-api=0.1.236
+  - earthengine-api
   - gdal=2.3.3
   - pandas
   - geopandas
