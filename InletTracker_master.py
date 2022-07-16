@@ -21,22 +21,23 @@ filepath_data = os.path.join(os.getcwd(), '/Volumes/elplaneta/InletTrackerData/d
 #sitename as specified in the input input_locations.shp
 #sitename = 'DURRAS' #user input required
 #site_shapefile_name = 'input_locations.shp' #user input required | change this if a new shapefile was created with the site configurations
-sitename = 'pescadero1' #user input required (if you mess this up, it will hang)
-#site_shapefile_name = 'input_locations.shp' #user input required | change this if a new shapefile was created with the site configurations
-site_shapefile_name = 'input_locations.shp'
+sitename = 'ACONCAGUA_to_COLMO' #user input required (if you mess this up, it will hang)
+site_shapefile_name = 'input_locations.shp' #user input required | change this if a new shapefile was created with the site configurations
+#site_shapefile_name = 'input_locations.shp'
 
 #this parameter is used to distinguish progressive 'sets' of analysis that may be based on different seed and receiver point configurations
 #note that within this set of results, a unique directory is created for each path finding index
 Analysis_version = 'V1'   #user input required
 
 # date range for analysis
-#dates = ['1984-03-01', '2021-12-01']   #user input required
+dates = ['2022-03-01', '2022-07-15']   #user input required
+#dates = ['2019-01-01', '2021-01-01']
 #dates = ['2021-01-01','2021-12-01']
-dates = ['2021-01-01', '2021-12-01']   #user input required
+#dates = ['2021-01-01', '2021-3-01']   #user input required
 
 # satellite missions
-#sat_list = ['L5','L7','L8','S2'] #user input required
-sat_list = ['L8','S2']
+sat_list = ['L5','L7','L8','S2'] #user input required
+#sat_list = ['L7','L8','S2']
 #sat_list = ['L5','L7']
 #sat_list = ['L8']
 #sat_list = ['S2']
@@ -98,7 +99,7 @@ settings_training =  { # set parameters for training data generation
                       }
 
 # only rerun this step if you have not already generated a set of training data (i.e., only run once)
-Training_data_df = InletTracker_tools.create_training_data(metadata, settings, settings_training)
+#Training_data_df = InletTracker_tools.create_training_data(metadata, settings, settings_training)
 
  
 
@@ -181,7 +182,7 @@ settings_inlet =  {
     }
 
 # run this function only if the current path finding settings haven't been processed yet (i.e., run only once for each spectral index)
-InletTracker_tools.automated_inlet_paths(metadata, settings, settings_inlet, tides_df , sat_tides_df)
+#InletTracker_tools.automated_inlet_paths(metadata, settings, settings_inlet, tides_df , sat_tides_df)
 
 
 
