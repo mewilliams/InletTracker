@@ -4,9 +4,11 @@
 
 # Valentin Heimhuber, Water Research Laboratory, University of New South Wales, 2020
 
-#%% Step 1: Initial algorithm settings & imagery download
+#%% Step 1: Initial algorithm settings & fagery download
 #load modules
 import os
+
+
 from inlettracker import  InletTracker_tools 
 from coastsat import SDS_download
 import pandas as pd
@@ -27,21 +29,26 @@ site_shapefile_name = 'input_locations.shp' #user input required | change this i
 
 #this parameter is used to distinguish progressive 'sets' of analysis that may be based on different seed and receiver point configurations
 #note that within this set of results, a unique directory is created for each path finding index
-Analysis_version = 'V1'   #user input required
+Analysis_version = 'V4'  #user input required
 
 # date range for analysis
-dates = ['2022-03-01', '2022-07-15']   #user input required
+#dates = ['2019-01-01', '2020-07-16']   #user input required
 #dates = ['2019-01-01', '2021-01-01']
 #dates = ['2021-01-01','2021-12-01']
-#dates = ['2021-01-01', '2021-3-01']   #user input required
+dates = ['2021-07-13', '2022-08-16']   #user input required
 
-# satellite missions
+#dates = ['1997-01-01', '1999-3-01']   #user input required
+
+# satellite mission
+#sat_list = ['L5','L7','L8','L9','S2'] #user input required
 sat_list = ['L5','L7','L8','S2'] #user input required
+
 #sat_list = ['L7','L8','S2']
 #sat_list = ['L5','L7']
 #sat_list = ['L8']
 #sat_list = ['S2']
 
+landsat_collection = 'C01' # options 'C01' or 'C02', L9 only C02.
 
 #load shapefile that contains specific shapes for each ICOLL site as per readme file
 Site_shps, layers, BBX_coords = InletTracker_tools.load_shapes(site_shapefile_name, sitename)
@@ -54,7 +61,8 @@ inputs = {
     'sitename': sitename,
     'filepath': filepath_data,
     'location_shps': Site_shps,
-    'analysis_vrs' : Analysis_version
+    'analysis_vrs' : Analysis_version,
+    'landsat_collection' : landsat_collection
         }
 
 # retrieve satellite images from GEE (run only once!)
@@ -74,7 +82,7 @@ settings = {
     # add the inputs defined previously
     'inputs': inputs,
     #advanced
-    'cloud_mask_issue': True,  # switch this parameter to True if sand pixels are masked (in black) on many images 
+    'cloud_mask_issue': False,  # switch this parameter to True if sand pixels are masked (in black) on many images 
     }      
 
     
@@ -95,7 +103,7 @@ It is recommended to:
 settings_training =  { # set parameters for training data generation
                     'shuffle_training_imgs':True,   # if True, images during manual/visual detection of inlet states are shuffled (in time) to provide a more independent sample
                     'save_figure': True,        # if True, saves a figure for each trained image     
-                    'username' : 'InletTracker', # in case multiple analysts create training data or one analyst creating multiple training datasets, this can be used as a distinguishing variable.
+                    'username' : 'mw2', # in case multiple analysts create training data or one analyst creating multiple training datasets, this can be used as a distinguishing variable.
                       }
 
 # only rerun this step if you have not already generated a set of training data (i.e., only run once)
@@ -138,7 +146,7 @@ This is the major automated processing step of the algorithm consisting of:
 settings_inlet =  {   
                   
     #key algorithm parameters
-    'path_index': 'mndwi',                   #band/index used for pathfinding | options are ndwi, mndwi, swir, nir !! do not capitalize !! 
+    'path_index': 'ndwi',                   #band/index used for pathfinding | options are ndwi, mndwi, swir, nir !! do not capitalize !! 
     'sand_percentile': 50 ,                #percentile of sand to plot - this is later used to calculate the delta to median parameter
     'XB_cost_raster_amp_exponent': 25,     #The cost raster based on 'path_index' will be exponentiated with this factor before path finding across berm
     'AB_cost_raster_amp_exponent': 25,     #The cost raster based on 'path_index' will be exponentiated with this factor before path finding along berm
@@ -152,11 +160,12 @@ settings_inlet =  {
     #sometimes specific images may cause the code to crash. If that image nr is included here it will be skipped when you rerun the algorithm 
     'skip_img_L8': [0],                   
     'skip_img_L7': [0],
-    'skip_img_L5': [0],
+    'skip_img_L5': [0], #SWIR skip 119 on Aconcagua-to-Colmo
     'skip_img_S2': [0], 
+    'skip_img_L9': [0],
     
     #extract a different spectral index along the transects in addition to NDWI and mNDWI: 
-    'index_id': 'bandratio',              #options are NIR, 'bandratio'|'ImprovedNIRwithSAC'|'NIRoverRedwithSAC'|'greenminusred'
+    'index_id': 'greenminusred',              #options are NIR, 'bandratio'|'ImprovedNIRwithSAC'|'NIRoverRedwithSAC'|'greenminusred'
     'band1': 1,                           #if index_id = bandratio, band1 is divided by band2
     'band2': 0,                           #bands 0,1,2,3,4 are blue, green, red, NIR, SWIR1
     
@@ -169,10 +178,10 @@ settings_inlet =  {
     'img_crop_adjsut': 0,                 #nr of pixels to add on each side (along x axis) to the cropped image to fill out plt space. needs to be adjusted for each site                       
     'vhline_transparancy': 0.8 ,          #transparancy of v and h lines in the output plots
     'hist_bw': 0.05,                      #parameter for histogram smoothing in the output plots
-    'fontsize' : 25 ,      #10            #size of fonts in plot
-    'labelsize' :40   ,       #26          #size of text lables
-    'axlabelsize': 20 ,                   #sie of axis labels    
-    'transect_linewidth': 2.7,              #width of the spectral trasect lines 
+    'fontsize' : 10 ,      #10            #size of fonts in plot
+    'labelsize' :10   ,       #26          #size of text lables
+    'axlabelsize': 10 ,                   #sie of axis labels    
+    'transect_linewidth': 2.0,              #width of the spectral trasect lines 
     
     #plotting parameters for an additional, simpler output plot that is good for creating animations or illisrations
     'animation_plot_bool': True,          #output a second set of plots with a simpler plot layout and fewer windows useful for animations
@@ -207,14 +216,14 @@ Post-processing and data analysis part of the toolkit.
 #set processing parameters
 postprocess_params = { 
     #processing parameters - consider carefully 
-    'Postprocessing_version' : 'V1',           #this is a unique identifier used to distinguish different postprocessing versions (e.g. based on different spectral index)
-    'spectral_index' : 'mndwi',                 #band/index used for inferring inlet states via delta-to-median parameter: options are ndwi, nir, swir or mndwi
+    'Postprocessing_version' : 'V_mw2',           #this is a unique identifier used to distinguish different postprocessing versions (e.g. based on different spectral index)
+    'spectral_index' : 'ndwi',                 #band/index used for inferring inlet states via delta-to-median parameter: options are ndwi, nir, swir or mndwi
     'metric_percentile' : 0.5 ,                 #which percentile to use for 'delta to median' parameter. Typically recommended to be 0.5, which is the median.  
     'AB_intersection_search_distance' : 200,    #window on either side of the AB intersection to limit the calculation of the area under the Xth percentile | should be bit bigger than the max width of the inlet
     'XB_intersection_search_distance' : 200,    #window on either side of the XB intersection to locate maximum (m)NDWI in the area of the channel bottleneck.
     'sat_list_pp' :  ['L5','L7','L8','S2'],      #these satellites are included in postprocessing.
     'startdate' :  '1985-01-01',
-    'enddate' : '2022-01-01',
+    'enddate' : '2022-08-01',
 
     # plotting parameters - do not have to be changed
     'closed_color' : 'orangered',           #color used for plotting closed inlet states
@@ -309,6 +318,8 @@ XS_DTM_classified_df = InletTracker_tools.subset_DTM_df_in_time(XS_DTM_classifie
 
 #%% ######################
 #5.3 Check detection
+
+
 ##########################
 
 #Here, the user has the ability to go over each automated inlet state detection via an interactive pop-up window
